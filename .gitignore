@@ -1,0 +1,25 @@
+.idea
+.settings
+.build
+.beans
+.DS_Store
+.vscode
+node_modules/
+/logs
+/cdbs
+*.log
+oom_1
+*.swp
+npm-debug.log*
+.configcache
+
+# Private files that should never be checked into Git
+protected/**/*
+slipper-cache.json
+
+# OS generated files #
+######################
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db

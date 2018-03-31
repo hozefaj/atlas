@@ -1,0 +1,22 @@
+{
+  "name": "project-atlas",
+  "version": "1.0.0",
+  "description": "random photo viewing",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx webpack"
+  },
+  "author": "hozefaj",
+  "license": "ISC",
+  "dependencies": {
+    "unsplash-js": "^4.8.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.6.1",
+    "webpack": "^4.4.1",
+    "webpack-cli": "^2.0.13"
+  }
+}
