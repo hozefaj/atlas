@@ -91,6 +91,7 @@ previous.addEventListener('click', (e) => {
   e.preventDefault();
 
   if(currImage - 1 >= 0) {
+    next.classList.remove('disable');
     // remove existing image
     modalBody.querySelector('.modal__image').remove();
 
@@ -100,6 +101,8 @@ previous.addEventListener('click', (e) => {
     img.setAttribute('src', `https://picsum.photos/600?image=${currImage}`);
     img.classList.add('modal__image');
     modalBody.appendChild(img);
+  } else {
+    previous.classList.add('disable');
   }
 });
 
@@ -108,8 +111,8 @@ const next = document.querySelector('.next');
 next.addEventListener('click', (e) => {
   e.preventDefault();
 
-
-  if(currImage + 1 <= PAGE_SIZE) {
+  if(currImage + 1 < PAGE_SIZE) {
+    previous.classList.remove('disable');
     // remove existing image
     modalBody.querySelector('.modal__image').remove();
 
@@ -119,37 +122,7 @@ next.addEventListener('click', (e) => {
     img.setAttribute('src', `https://picsum.photos/600?image=${currImage}`);
     img.classList.add('modal__image');
     modalBody.appendChild(img);
+  } else {
+    next.classList.add('disable');
   }
 });
-
-// TODO: create pagination
-
-
-// TODO: fetching the images
-// issue is the response does not the URL of the image
-// const getImages = async () => {
-//   const response = await fetch('https://picsum.photos/list');
-//   images = await response.json();
-// }
-// getImages();
-
-// const numItemsToGenerate = 20; //how many gallery items you want on the screen
-// const imageWidth = 480; //your desired image width in pixels
-// const imageHeight = 480; //desired image height in pixels
-// const collectionID = 1163637; //the collection ID from the original url
-
-// const renderGalleryItem = async () => {
-//   const response = await fetch(`https://source.unsplash.com/collection/${collectionID}/${imageWidth}x${imageHeight}/`, {mode: 'no-cors'});
-//   const data = await response.json();
-//   console.log(response)
-//   let galleryItem = document.createElement('div');
-//   galleryItem.classList.add('gallery-item');
-//   galleryItem.innerHTML = `
-//     <img class="gallery-image" src="${response.url}" alt="gallery image"/>
-//   `
-//   document.body.appendChild(galleryItem);
-//   console.log(galleryItem);
-// }
-// for(let i=0;i<numItemsToGenerate;i++){
-//   renderGalleryItem();
-// }
