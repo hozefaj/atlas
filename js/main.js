@@ -6,6 +6,7 @@ const PAGE_SIZE = 20;
 // global variables
 // let images = [];
 let page = 0;
+let currImage; // current image selected in modal
 
 // issue is the response does not the URL of the image
 // const getImages = async () => {
@@ -42,15 +43,16 @@ createThumbnails();
 imageContainer.addEventListener('click', (e) => {
   e.preventDefault();
 
+  // TODO: add check for target
+
   // opening the modal
   modal.classList.add('open');
 
   // getting the bigger version of the image
-  console.dir(e.target.src);
-  const number = e.target.src.split('=')[1];
+  currImage = parseInt(e.target.src.split('=')[1], 10);
 
   let img = document.createElement('img');
-  img.setAttribute('src', `https://picsum.photos/600?image=${number}`);
+  img.setAttribute('src', `https://picsum.photos/600?image=${currImage}`);
   img.classList.add('modal__image');
   modalBody.appendChild(img);
 })
@@ -62,6 +64,42 @@ modalClose.addEventListener('click', () => {
   modalBody.querySelector('.modal__image').remove();
 });
 
+// handling previous button click on modal
+const previous = document.querySelector('.previous');
+previous.addEventListener('click', (e) => {
+  e.preventDefault();
+
+  if(currImage - 1 >= 0) {
+    // remove existing image
+    modalBody.querySelector('.modal__image').remove();
+
+    // add new image
+    currImage = currImage - 1;
+    let img = document.createElement('img');
+    img.setAttribute('src', `https://picsum.photos/600?image=${currImage}`);
+    img.classList.add('modal__image');
+    modalBody.appendChild(img);
+  }
+});
+
+// handling next button click on modal
+const next = document.querySelector('.next');
+next.addEventListener('click', (e) => {
+  e.preventDefault();
+
+
+  if(currImage + 1 <= PAGE_SIZE) {
+    // remove existing image
+    modalBody.querySelector('.modal__image').remove();
+
+    // add new image
+    currImage = currImage + 1;
+    let img = document.createElement('img');
+    img.setAttribute('src', `https://picsum.photos/600?image=${currImage}`);
+    img.classList.add('modal__image');
+    modalBody.appendChild(img);
+  }
+});
 
 // TODO: create pagination
 

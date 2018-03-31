@@ -39,3 +39,19 @@
   width: 24px;
   text-decoration: none;
 }
+
+.previous, .next {
+  position: absolute;
+  top: 300px;
+  text-decoration: none;
+  font-size: 2rem;
+  color: #2c2e2f;
+}
+
+.previous {
+  left: 10px;
+}
+
+.next {
+  left: 660px;
+}
