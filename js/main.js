@@ -1,24 +1,15 @@
-// TODO: fetching the images
-
 // constants
 const PAGE_SIZE = 20;
 
 // global variables
-// let images = [];
 let page = 0;
 let currImage; // current image selected in modal
-
-// issue is the response does not the URL of the image
-// const getImages = async () => {
-//   const response = await fetch('https://picsum.photos/list');
-//   images = await response.json();
-// }
 
 const imageContainer = document.getElementsByClassName('images__container')[0];
 const modal = document.querySelector('.modal__dialog');
 const modalBody = document.querySelector('.modal__body');
 
-// TODO: show spinner while image are loading
+// create thumbnail for every image
 const createThumbnails = () => {
   const start = page * PAGE_SIZE;
   const end = start + PAGE_SIZE;
@@ -43,25 +34,40 @@ createThumbnails();
 imageContainer.addEventListener('click', (e) => {
   e.preventDefault();
 
-  // TODO: add check for target
+  // open modal only if image is clicked
+  if(e.target.localName === 'img') {
+    // opening the modal
+    modal.classList.add('open');
 
-  // opening the modal
-  modal.classList.add('open');
+    // getting the bigger version of the image
+    currImage = parseInt(e.target.src.split('=')[1], 10);
 
-  // getting the bigger version of the image
-  currImage = parseInt(e.target.src.split('=')[1], 10);
-
-  let img = document.createElement('img');
-  img.setAttribute('src', `https://picsum.photos/600?image=${currImage}`);
-  img.classList.add('modal__image');
-  modalBody.appendChild(img);
+    let img = document.createElement('img');
+    img.setAttribute('src', `https://picsum.photos/600?image=${currImage}`);
+    img.classList.add('modal__image');
+    modalBody.appendChild(img);
+  }
 })
 
 // closing the modal & removing image from modal
-const modalClose = document.querySelector('.close');
-modalClose.addEventListener('click', () => {
+const closeModal = () => {
   modal.classList.remove('open');
   modalBody.querySelector('.modal__image').remove();
+}
+
+// capture click event on close button
+const modalClose = document.querySelector('.close');
+modalClose.addEventListener('click', () => {
+  closeModal();
+});
+
+// capturing escape key to close the modal
+const body = document.querySelector('body');
+body.addEventListener('keyup', (e) => {
+  // if escape key is pressed and modal is open
+  if(e.keyCode === 27 && modal.classList.contains('open')) {
+    closeModal();
+  }
 });
 
 // handling previous button click on modal
@@ -103,8 +109,14 @@ next.addEventListener('click', (e) => {
 
 // TODO: create pagination
 
-// getImages();
 
+// TODO: fetching the images
+// issue is the response does not the URL of the image
+// const getImages = async () => {
+//   const response = await fetch('https://picsum.photos/list');
+//   images = await response.json();
+// }
+// getImages();
 
 // const numItemsToGenerate = 20; //how many gallery items you want on the screen
 // const imageWidth = 480; //your desired image width in pixels
