@@ -1,6 +1,6 @@
 html {
   font-size: 16px;
-  font-family: 'Open Sans', 'Helvetica Neue', sans-serif
+  font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 body {
@@ -29,4 +29,7 @@ body {
 
 .images__thumbnail {
   width: 100%;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }

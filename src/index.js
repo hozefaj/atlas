@@ -1,5 +1,5 @@
 // constants
-const PAGE_SIZE = 30;
+const PAGE_SIZE = 28;
 
 // global variables
 let images = [];
