@@ -20,6 +20,7 @@ const getImages = async () => {
     // create image tag
     let img = document.createElement('img');
     img.setAttribute('src', images[i].urls.thumb);
+    img.setAttribute('alt', `image by ${images[i].user.first_name}`)
     img.setAttribute('data-image-index', i);
     img.classList.add('images__thumbnail');
 
@@ -28,6 +29,7 @@ const getImages = async () => {
     a.classList.add('images__anchor');
     a.href = '#';
     a.setAttribute('data-image-index', i);
+    a.setAttribute('aria-label', 'click to get image details');
     a.appendChild(img);
     imageContainer.appendChild(a);
   }

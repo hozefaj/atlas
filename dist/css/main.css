@@ -33,3 +33,9 @@ body {
   top: 50%;
   transform: translateY(-50%);
 }
+
+@media only screen and (max-device-width: 480px) {
+  .images__container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
