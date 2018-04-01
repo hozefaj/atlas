@@ -1,74 +1,77 @@
-// import Unsplash, { toJson } from 'unsplash-js';
-
-// const unsplash = new Unsplash({
-//   applicationId: "23738",
-//   secret: "3ddc2f197b80b569f266743fa6b00b7b7c38dd27361fff7ae6d2cabb80e384ed",
-//   callbackUrl: "urn:ietf:wg:oauth:2.0:oob"
-// });
-
-// unsplash.photos.listPhotos(2, 15, "latest")
-//   .then(toJson)
-//   .then(json => {
-//     // Your code
-//     console.log(json);
-//   });
-
 // constants
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 30;
 
 // global variables
-let page = 0;
-let currImage; // current image selected in modal
+let images = [];
+let currImageIndex; // current image selected in modal
 
 const imageContainer = document.getElementsByClassName('images__container')[0];
 const modal = document.querySelector('.modal__dialog');
 const modalBody = document.querySelector('.modal__body');
 
-// create thumbnail for every image
-const createThumbnails = () => {
-  const start = page * PAGE_SIZE;
-  const end = start + PAGE_SIZE;
+const getImages = async () => {
+  const response = await fetch(
+    `https://api.unsplash.com/photos/?client_id=4a0e0fa13f07d403a9763ad73f6e06a5c767574e890c7121bdf5249c48e2146f&page=0&per_page=${PAGE_SIZE}`
+  );
+  images = await response.json();
 
-  for(let i=start; i<end; i++){
+  // create thumbnail for every image
+  for (let i = 0; i < PAGE_SIZE; i++) {
     // create image tag
     let img = document.createElement('img');
-    img.setAttribute('src', `https://picsum.photos/200/300?image=${i}`);
+    img.setAttribute('src', images[i].urls.thumb);
+    img.setAttribute('data-image-index', i);
     img.classList.add('images__thumbnail');
 
     // create anchor tag to wrap individual images
     let a = document.createElement('a');
-    a.classList.add('images__anchor')
-    a.href = "#"
+    a.classList.add('images__anchor');
+    a.href = '#';
+    a.setAttribute('data-image-index', i);
     a.appendChild(img);
     imageContainer.appendChild(a);
   }
-}
-createThumbnails();
+};
+getImages();
 
 // attach event listener for getting the onclick event from every image click
-imageContainer.addEventListener('click', (e) => {
+imageContainer.addEventListener('click', e => {
   e.preventDefault();
 
-  // open modal only if image is clicked
-  if(e.target.localName === 'img') {
+  // open modal only if image/anchor is clicked
+  if (!e.target.classList.contains('images__container')) {
     // opening the modal
     modal.classList.add('open');
+    currImageIndex = parseInt(e.target.dataset.imageIndex, 10);
 
     // getting the bigger version of the image
-    currImage = parseInt(e.target.src.split('=')[1], 10);
-
-    let img = document.createElement('img');
-    img.setAttribute('src', `https://picsum.photos/600?image=${currImage}`);
-    img.classList.add('modal__image');
-    modalBody.appendChild(img);
+    let div = document.createElement('div');
+    div.classList.add('modal_container');
+    div.innerHTML = `
+      <img
+        src="${images[currImageIndex].urls.small}"
+        class="modal__image"
+      />
+      <div class="modal__attribution">
+        <a
+          href="${images[currImageIndex].user.portfolio_url}"
+          target="_blank"
+          class="modal__link"
+          >
+          ${images[currImageIndex].user.first_name || ''}
+          ${images[currImageIndex].user.last_name || ''}
+        </a>
+      </div>
+    `;
+    modalBody.appendChild(div);
   }
-})
+});
 
 // closing the modal & removing image from modal
 const closeModal = () => {
   modal.classList.remove('open');
-  modalBody.querySelector('.modal__image').remove();
-}
+  modalBody.querySelector('.modal_container').remove();
+};
 
 // capture click event on close button
 const modalClose = document.querySelector('.close');
@@ -78,29 +81,23 @@ modalClose.addEventListener('click', () => {
 
 // capturing escape key to close the modal
 const body = document.querySelector('body');
-body.addEventListener('keyup', (e) => {
+body.addEventListener('keyup', e => {
   // if escape key is pressed and modal is open
-  if(e.keyCode === 27 && modal.classList.contains('open')) {
+  if (e.keyCode === 27 && modal.classList.contains('open')) {
     closeModal();
   }
 });
 
 // handling previous button click on modal
 const previous = document.querySelector('.previous');
-previous.addEventListener('click', (e) => {
+previous.addEventListener('click', e => {
   e.preventDefault();
 
-  if(currImage - 1 >= 0) {
+  if (currImageIndex - 1 >= 0) {
     next.classList.remove('disable');
-    // remove existing image
-    modalBody.querySelector('.modal__image').remove();
+    currImageIndex = currImageIndex - 1;
 
-    // add new image
-    currImage = currImage - 1;
-    let img = document.createElement('img');
-    img.setAttribute('src', `https://picsum.photos/600?image=${currImage}`);
-    img.classList.add('modal__image');
-    modalBody.appendChild(img);
+    updateContent();
   } else {
     previous.classList.add('disable');
   }
@@ -108,21 +105,26 @@ previous.addEventListener('click', (e) => {
 
 // handling next button click on modal
 const next = document.querySelector('.next');
-next.addEventListener('click', (e) => {
+next.addEventListener('click', e => {
   e.preventDefault();
 
-  if(currImage + 1 < PAGE_SIZE) {
+  if (currImageIndex + 1 < PAGE_SIZE) {
     previous.classList.remove('disable');
-    // remove existing image
-    modalBody.querySelector('.modal__image').remove();
+    currImageIndex = currImageIndex + 1;
 
-    // add new image
-    currImage = currImage + 1;
-    let img = document.createElement('img');
-    img.setAttribute('src', `https://picsum.photos/600?image=${currImage}`);
-    img.classList.add('modal__image');
-    modalBody.appendChild(img);
+    updateContent();
   } else {
     next.classList.add('disable');
   }
 });
+
+const updateContent = () => {
+  // replace source with new image src
+  let img = modalBody.querySelector('.modal__image');
+  img.setAttribute('src', images[currImageIndex].urls.small);
+
+  // replace author
+  let a = modalBody.querySelector('.modal__link');
+  a.setAttribute('href', images[currImageIndex].user.portfolio_url);
+  a.innerHTML = images[currImageIndex].user.first_name + images[currImageIndex].user.last_name;
+};
